@@ -1,9 +1,15 @@
 #include "../include/Player.hpp"
 #include "../include/TextureManager.hpp"
-
+#define __MOVEMENT_SPEED__ 1
 Player::Player(const char *img_path, int xPos, int yPos) : GameObject(img_path, xPos, yPos)
 {
-    this->m_moving = false;
+
+    m_movementState[(int)(_MOVING_STATE::__STATE_LEFT)] = false;
+    m_movementState[(int)(_MOVING_STATE::__STATE_RIGHT)] = false;
+    m_movementState[(int)(_MOVING_STATE::__STATE_DOWN)] = false;
+    m_movementState[(int)(_MOVING_STATE::__STATE_UP)] = false;
+
+    m_moving = false;
 };
 
 void Player::Update()
@@ -11,80 +17,73 @@ void Player::Update()
     if (m_moving)
     {
         this->m_objTexture = Texture::TextureManager::LoadTexture("assets/player/run.png");
-        if (m_movingLeft)
+        if (m_movementState[(int)(_MOVING_STATE::__STATE_LEFT)] == true)
         {
-
-            m_objRect.x -= 1;
+            m_objRect.x -= __MOVEMENT_SPEED__;
         }
-        if (m_movingRight)
+        if (m_movementState[(int)(_MOVING_STATE::__STATE_RIGHT)] == true)
         {
-
-            m_objRect.x += 1;
+            m_objRect.x += __MOVEMENT_SPEED__;
         }
-        if (m_movingUp)
+        if (m_movementState[(int)(_MOVING_STATE::__STATE_DOWN)] == true)
         {
-
-            m_objRect.y -= 1;
+            m_objRect.y += __MOVEMENT_SPEED__;
         }
-        if (m_movingDown)
+        if (m_movementState[(int)(_MOVING_STATE::__STATE_UP)] == true)
         {
-
-            m_objRect.y += 1;
+            m_objRect.y -= __MOVEMENT_SPEED__;
         }
     }
     else
     {
+
         this->m_objTexture = Texture::TextureManager::LoadTexture("assets/player/idle.png");
     }
 }
 
-void Player::HandleInput(const SDL_Event *event)
+void Player::HandleInput(const SDL_Event *e)
 {
-
-    if (event->type == SDL_KEYDOWN)
+    if (e->key.type == SDL_KEYDOWN)
     {
-        m_moving = true;
-        switch (event->key.keysym.sym)
+        switch (e->key.keysym.sym)
         {
         case SDLK_LEFT:
-            m_movingLeft = true;
-
-            break;
-        case SDLK_RIGHT:
-            m_movingRight = true;
-
+            m_movementState.set(static_cast<int>(_MOVING_STATE::__STATE_LEFT));
             break;
         case SDLK_DOWN:
-            m_movingDown = true;
-
+            m_movementState.set(static_cast<int>(_MOVING_STATE::__STATE_DOWN));
             break;
         case SDLK_UP:
-            m_movingUp = true;
-
+            m_movementState.set(static_cast<int>(_MOVING_STATE::__STATE_UP));
+            break;
+        case SDLK_RIGHT:
+            m_movementState.set(static_cast<int>(_MOVING_STATE::__STATE_RIGHT));
             break;
         default:
             break;
         }
     }
-    else if (event->type == SDL_KEYUP)
+    else if (e->key.type == SDL_KEYUP)
     {
-        m_moving = false;
-        switch (event->key.keysym.sym)
+        switch (e->key.keysym.sym)
         {
         case SDLK_LEFT:
-            m_movingLeft = false;
-            break;
-        case SDLK_RIGHT:
-            m_movingRight = false;
+            m_movementState.reset(static_cast<int>(_MOVING_STATE::__STATE_LEFT));
             break;
         case SDLK_DOWN:
-            m_movingDown = false;
+            m_movementState.reset(static_cast<int>(_MOVING_STATE::__STATE_DOWN));
             break;
         case SDLK_UP:
-            m_movingUp = false;
+            m_movementState.reset(static_cast<int>(_MOVING_STATE::__STATE_UP));
+            break;
+        case SDLK_RIGHT:
+            m_movementState.reset(static_cast<int>(_MOVING_STATE::__STATE_RIGHT));
             break;
         default:
             break;
         }
     }
+
+    // Check if any movement key is pressed
+    m_moving = m_movementState.any();
 }
