@@ -100,6 +100,7 @@ int Game::GetScreenYPos() const
 void Game::Update()
 {
     // console->Update()
+    player->Update();
     switch (m_current_gstate)
     {
     case STATE::_GSTATE_POKEDEX:
