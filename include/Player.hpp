@@ -18,7 +18,7 @@ class Player : public GameObject
 public:
     Player(const char *img_path, int xPos, int yPos);
 
-    void Update();
+    void Update() override;
     void HandleInput(const SDL_Event *e);
 
     ~Player();

@@ -6,13 +6,12 @@ class GameObject
 {
 protected:
     SDL_Texture *m_objTexture;
-    SDL_Rect m_objRect;
 
 public:
     GameObject(const char *img_path, int xPos, int yPos);
-
-    void Render();
-    void Update();
+    SDL_Rect m_objRect;
+    void Render();             // Render method is the same for all game_objects, it just renders the texture at the given transform
+    virtual void Update() = 0; // update can be different for children, where each child has its own updateable states
 
     ~GameObject();
 };

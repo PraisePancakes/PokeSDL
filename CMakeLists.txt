@@ -4,7 +4,7 @@ set(PROJECT_NAME pokesdl)
 
 project(${PROJECT_NAME} LANGUAGES CXX)
 
-set(SOURCES src/main.cpp src/Game.cpp src/Console.cpp src/Textbox.cpp src/TextureManager.cpp src/Button.cpp src/GameObject.cpp src/Player.cpp)
+set(SOURCES src/main.cpp src/Game.cpp src/Console.cpp src/Textbox.cpp src/TextureManager.cpp src/GameObject.cpp src/Player.cpp)
 
 include_directories(lib/SDL2/include lib/SDL2Image/include lib/SDL2TTF/include)
 

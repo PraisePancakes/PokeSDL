@@ -14,7 +14,3 @@ void GameObject::Render()
 {
     SDL_RenderCopy(Game::Renderer, this->m_objTexture, NULL, &this->m_objRect);
 }
-
-void GameObject::Update()
-{
-}

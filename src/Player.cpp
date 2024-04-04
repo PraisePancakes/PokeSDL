@@ -36,7 +36,6 @@ void Player::Update()
     }
     else
     {
-
         this->m_objTexture = Texture::TextureManager::LoadTexture("assets/player/idle.png");
     }
 }

@@ -38,35 +38,52 @@ Game::Game(const char *title, int screen_xpos, int screen_ypos, int screen_width
         std::cout << "[f. err] SDL failed to initialize renderer " << SDL_GetError() << std::endl;
         exit(EXIT_FAILURE);
     }
-    if (!_initializeButtons())
-    {
-        std::cout << "[f. err] Buttons failed to initialize " << std::endl;
-    };
 
     console = new Console(0, m_screen_height / 2, m_screen_width, m_screen_height / 2, {95, 200, 200, 1});
     player = new Player("assets/player/idle.png", m_screen_width - (m_screen_width / 2), 20);
+    if (!_initMarkers())
+    {
+        std::cout << "[f. err] Game failed to initialize markers " << std::endl;
+        exit(EXIT_FAILURE);
+    };
+
     m_current_gstate = STATE::_GSTATE_MENU;
     m_running = true;
 };
 
-bool Game::_initializeButtons()
+bool Game::_initMarkers()
 {
-    SDL_Color white = {255, 255, 255, 255};
+    const SDL_Color markerColor = {0, 0, 0, 0};
+    const unsigned int MARKER_WIDHT = 150;
+    const unsigned int MARKER_HEIGHT = 50;
 
-    Button *b1 = new Button(new Textbox({20, 25, 150, 50}, white, "Catch", 12));
-    Button *b2 = new Button(new Textbox({20, 50 + 25, 150, 50}, white, "Pokedex", 12));
-    Button *b3 = new Button(new Textbox({20, 75 + 50, 150, 50}, white, "Achievements", 12));
-    Button *b4 = new Button(new Textbox({20, 100 + 75, 150, 50}, white, "Quit", 12));
+    Textbox *m1 = new Textbox({m_screen_width / 2 - 100, 0, MARKER_WIDHT, MARKER_HEIGHT}, markerColor, "Catch", 24);
+    Textbox *m2 = new Textbox({0, m_screen_height / 4, MARKER_WIDHT, MARKER_HEIGHT}, markerColor, "Pokedex", 24);
+    Textbox *m3 = new Textbox({m_screen_width - 150, m_screen_height / 4, MARKER_WIDHT, MARKER_HEIGHT}, markerColor, "Achievements", 24);
+    Textbox *m4 = new Textbox({m_screen_width / 2 - 100, m_screen_height / 2 - 50, MARKER_WIDHT, MARKER_HEIGHT}, markerColor, "Quit", 24);
 
-    if (!b1 || !b2 || !b3 || !b4)
+    if (!m1 || !m2 || !m3 || !m4)
     {
         return false;
     }
 
-    m_buttons.push_back(b1);
-    m_buttons.push_back(b2);
-    m_buttons.push_back(b3);
-    m_buttons.push_back(b4);
+    this->m_markers[0] = m1;
+    this->m_markers[1] = m2;
+    this->m_markers[2] = m3;
+    this->m_markers[3] = m4;
+
+    Textbox *q = new Textbox({m_screen_width / 2 - 100, 50, MARKER_WIDHT, MARKER_HEIGHT}, markerColor, "Quit?", 24);
+    Textbox *q1 = new Textbox({0, m_screen_height / 4, MARKER_WIDHT, MARKER_HEIGHT}, markerColor, "Yes", 24);
+    Textbox *q2 = new Textbox({m_screen_width - 150, m_screen_height / 4, MARKER_WIDHT, MARKER_HEIGHT}, markerColor, "No", 24);
+
+    if (!q || !q1 || !q2)
+    {
+        return false;
+    }
+
+    this->m_quitMarkers[0] = q;
+    this->m_quitMarkers[1] = q1;
+    this->m_quitMarkers[2] = q2;
 
     return true;
 };
@@ -101,13 +118,58 @@ void Game::Update()
 {
     // console->Update()
     player->Update();
+
+    if (!_quitState)
+    {
+        if (player->m_objRect.x > m_screen_width - 150)
+        {
+            m_current_gstate = STATE::_GSTATE_ACHIEVEMENTS;
+        }
+        else if (player->m_objRect.x < 0)
+        {
+            m_current_gstate = STATE::_GSTATE_POKEDEX;
+        }
+        else if (player->m_objRect.y > m_screen_height / 2 - 100)
+        {
+            m_current_gstate = STATE::_GSTATE_QUIT;
+            _quitState = true;
+        }
+        else if (player->m_objRect.y < 0)
+        {
+            m_current_gstate = STATE::_GSTATE_CATCH;
+        }
+        else
+        {
+            m_current_gstate = STATE::_GSTATE_MENU;
+        }
+    }
+
     switch (m_current_gstate)
     {
     case STATE::_GSTATE_POKEDEX:
+        std::cout << "POKEDEX" << std::endl;
         break;
     case STATE::_GSTATE_CATCH:
+        std::cout << "CATCH" << std::endl;
+        break;
+    case STATE::_GSTATE_ACHIEVEMENTS:
+        std::cout << "ACHIEVEMENTS" << std::endl;
+        break;
+    case STATE::_GSTATE_QUIT:
+        if (player->m_objRect.x < 0)
+        {
+            m_running = false;
+            _quitState = true;
+        }
+        else if (player->m_objRect.x >= m_screen_width - 150)
+        {
+            m_current_gstate = STATE::_GSTATE_MENU;
+            _quitState = false;
+        }
+        std::cout << "QUIT" << std::endl;
         break;
     case STATE::_GSTATE_MENU:
+        std::cout << "MENU" << std::endl;
         break;
     }
 };
@@ -119,11 +181,19 @@ void Game::Render()
     SDL_RenderClear(Renderer);
     console->Render();
     player->Render();
+
     if (m_current_gstate == STATE::_GSTATE_MENU)
     {
         for (int i = 0; i < 4; i++)
         {
-            m_buttons[i]->Render();
+            m_markers[i]->Render();
+        }
+    }
+    else if (m_current_gstate == STATE::_GSTATE_QUIT)
+    {
+        for (int i = 0; i < 3; i++)
+        {
+            m_quitMarkers[i]->Render();
         }
     }
 
@@ -163,11 +233,6 @@ void Game::_clean()
 };
 Game::~Game()
 {
-    for (Button *button : m_buttons)
-    {
-        delete button;
-    }
-
     console->~Console();
     delete console;
     _clean();
