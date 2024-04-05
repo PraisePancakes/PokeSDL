@@ -20,6 +20,12 @@ void Player::Render()
     SDL_RenderCopy(Game::Renderer, this->m_objTexture, NULL, &this->m_objRect);
 }
 
+void Player::CenterPos()
+{
+    this->m_objRect.x = 550;
+    this->m_objRect.y = 150;
+}
+
 void Player::Update()
 {
     if (m_moving)

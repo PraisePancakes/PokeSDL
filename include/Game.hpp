@@ -24,11 +24,9 @@ class Game
     void _clean();
     Textbox *m_markers[4];
     Textbox *m_quitMarkers[3];
-    bool _quitState = false;
-    bool _catchState = false;
-    bool _achievementState = false;
-    bool _menuState = true;
-    bool _pokedexState = false;
+    Textbox *m_backMarker;
+    bool _lockState;
+
     bool _initMarkers();
 
 public:

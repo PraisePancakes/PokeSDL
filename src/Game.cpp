@@ -81,6 +81,7 @@ bool Game::_initMarkers()
         return false;
     }
 
+    this->m_backMarker = new Textbox({0, m_screen_width / 4, MARKER_WIDHT, MARKER_HEIGHT}, markerColor, "Back", 24);
     this->m_quitMarkers[0] = q;
     this->m_quitMarkers[1] = q1;
     this->m_quitMarkers[2] = q2;
@@ -119,34 +120,27 @@ void Game::Update()
     // console->Update()
     player->Update();
 
-    if (!_quitState)
+    if (!_lockState)
     {
-        if (!_catchState || !_pokedexState || !_achievementState)
+        if (player->m_objRect.x > m_screen_width - 150) // achievement state
         {
-            if (player->m_objRect.x > m_screen_width - 150)
-            {
-                m_current_gstate = STATE::_GSTATE_ACHIEVEMENTS;
-                _achievementState = true;
-            }
-            else if (player->m_objRect.x < 0)
-            {
-                m_current_gstate = STATE::_GSTATE_POKEDEX;
-                _pokedexState = true;
-            }
-            else if (player->m_objRect.y > m_screen_height / 2 - 100)
-            {
-                m_current_gstate = STATE::_GSTATE_QUIT;
-                _quitState = true;
-            }
-            else if (player->m_objRect.y < 0)
-            {
-                m_current_gstate = STATE::_GSTATE_CATCH;
-                _catchState = true;
-            }
-            else
-            {
-                m_current_gstate = STATE::_GSTATE_MENU;
-            }
+            m_current_gstate = STATE::_GSTATE_ACHIEVEMENTS;
+            _lockState = true;
+        }
+        else if (player->m_objRect.x < 0 && player->m_objRect.y < m_screen_width / 4) // pokedex state
+        {
+            m_current_gstate = STATE::_GSTATE_POKEDEX;
+            _lockState = true;
+        }
+        else if (player->m_objRect.y > m_screen_height / 2 - 100) // quit state
+        {
+            m_current_gstate = STATE::_GSTATE_QUIT;
+            _lockState = true;
+        }
+        else if (player->m_objRect.y < 0) // catch state
+        {
+            m_current_gstate = STATE::_GSTATE_CATCH;
+            _lockState = true;
         }
     }
 
@@ -154,27 +148,60 @@ void Game::Update()
     {
     case STATE::_GSTATE_POKEDEX:
         std::cout << "POKEDEX" << std::endl;
+
+        // display pokedex list
+        if (player->m_objRect.x < 0 && player->m_objRect.y > m_screen_width / 4) // enter Pokedex state
+        {
+            player->CenterPos();
+            if (_lockState) // back to menu
+            {
+                m_current_gstate = STATE::_GSTATE_MENU;
+                _lockState = false; // Unlock the state when returning to menu
+            }
+        }
         break;
     case STATE::_GSTATE_CATCH:
         std::cout << "CATCH" << std::endl;
+        if (player->m_objRect.x < 0 && _lockState)
+        {
+            m_current_gstate = STATE::_GSTATE_MENU;
+            player->CenterPos();
+            _lockState = false;
+        }
+        else
+        {
+            // spawn a random pokemon
+        }
         break;
     case STATE::_GSTATE_ACHIEVEMENTS:
         std::cout << "ACHIEVEMENTS" << std::endl;
-        break;
-    case STATE::_GSTATE_QUIT:
-        if (player->m_objRect.x < 0)
-        {
-            m_running = false;
-            _quitState = true;
-        }
-        else if (player->m_objRect.x >= m_screen_width - 150)
+        if (player->m_objRect.x < 0 && _lockState)
         {
             m_current_gstate = STATE::_GSTATE_MENU;
-            _quitState = false;
+            player->CenterPos();
+            _lockState = false;
+        }
+        else
+        {
+            // display achievements list
+        }
+
+        break;
+    case STATE::_GSTATE_QUIT:
+        if (player->m_objRect.x < 0 && _lockState) // quit game
+        {
+            m_running = false;
+        }
+        else if (player->m_objRect.x >= m_screen_width - 150) // dont quit game
+        {
+            m_current_gstate = STATE::_GSTATE_MENU;
+            player->CenterPos();
+            _lockState = false;
         }
         std::cout << "QUIT" << std::endl;
         break;
     case STATE::_GSTATE_MENU:
+
         std::cout << "MENU" << std::endl;
         break;
     }
@@ -201,6 +228,20 @@ void Game::Render()
         {
             m_quitMarkers[i]->Render();
         }
+    }
+    else if (m_current_gstate == STATE::_GSTATE_POKEDEX)
+    {
+        // handle rendering pokedex
+        m_backMarker->Render();
+    }
+    else if (m_current_gstate == STATE::_GSTATE_CATCH)
+    {
+        // handle rendering catch
+        m_backMarker->Render();
+    }
+    else if (m_current_gstate == STATE::_GSTATE_ACHIEVEMENTS)
+    {
+        m_backMarker->Render();
     }
 
     SDL_RenderPresent(Renderer);

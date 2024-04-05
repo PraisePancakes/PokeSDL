@@ -23,6 +23,7 @@ public:
     void Update() override;
     void Render() override;
     void HandleInput(const SDL_Event *e);
+    void CenterPos();
 
     ~Player();
 };
