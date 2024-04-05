@@ -25,10 +25,14 @@ class Game
     Textbox *m_markers[4];
     Textbox *m_quitMarkers[3];
     bool _quitState = false;
+    bool _catchState = false;
+    bool _achievementState = false;
+    bool _menuState = true;
+    bool _pokedexState = false;
     bool _initMarkers();
 
 public:
-    Game(const char *title, int screen_xpos, int screen_ypos, int screen_width, int screen_height);
+    Game(const char *username, const char *title, int screen_xpos, int screen_ypos, int screen_width, int screen_height);
     static SDL_Renderer *Renderer;
 
     void SetGameState(STATE gs);

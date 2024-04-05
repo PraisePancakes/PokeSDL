@@ -1,16 +1,24 @@
 #include "../include/Player.hpp"
 #include "../include/TextureManager.hpp"
 #define __MOVEMENT_SPEED__ 1
-Player::Player(const char *img_path, int xPos, int yPos) : GameObject(img_path, xPos, yPos)
+Player::Player(const char *username, const char *img_path, int xPos, int yPos) : GameObject(img_path, xPos, yPos)
 {
 
     m_movementState[(int)(_MOVING_STATE::__STATE_LEFT)] = false;
     m_movementState[(int)(_MOVING_STATE::__STATE_RIGHT)] = false;
     m_movementState[(int)(_MOVING_STATE::__STATE_DOWN)] = false;
     m_movementState[(int)(_MOVING_STATE::__STATE_UP)] = false;
+    m_nameSerializable = username;
+    m_nameBox = new Textbox({this->m_objRect.x + (this->m_objRect.w / 2), this->m_objRect.y + 20, 50, 10}, {255, 255, 255, 255}, m_nameSerializable.c_str(), 12);
 
     m_moving = false;
 };
+
+void Player::Render()
+{
+    this->m_nameBox->Render();
+    SDL_RenderCopy(Game::Renderer, this->m_objTexture, NULL, &this->m_objRect);
+}
 
 void Player::Update()
 {
@@ -38,6 +46,9 @@ void Player::Update()
     {
         this->m_objTexture = Texture::TextureManager::LoadTexture("assets/player/idle.png");
     }
+
+    this->m_nameBox->m_boxRect.x = this->m_objRect.x + (this->m_objRect.w / 4);
+    this->m_nameBox->m_boxRect.y = this->m_objRect.y + 20;
 }
 
 void Player::HandleInput(const SDL_Event *e)

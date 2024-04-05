@@ -14,11 +14,14 @@ class Player : public GameObject
 {
     std::bitset<4> m_movementState;
     bool m_moving;
+    std::string m_nameSerializable;
+    Textbox *m_nameBox;
 
 public:
-    Player(const char *img_path, int xPos, int yPos);
+    Player(const char *username, const char *img_path, int xPos, int yPos);
 
     void Update() override;
+    void Render() override;
     void HandleInput(const SDL_Event *e);
 
     ~Player();

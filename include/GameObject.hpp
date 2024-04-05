@@ -10,7 +10,7 @@ protected:
 public:
     GameObject(const char *img_path, int xPos, int yPos);
     SDL_Rect m_objRect;
-    void Render();             // Render method is the same for all game_objects, it just renders the texture at the given transform
+    virtual void Render() = 0; // Render is now a virtual because player render will be different from each other object
     virtual void Update() = 0; // update can be different for children, where each child has its own updateable states
 
     ~GameObject();

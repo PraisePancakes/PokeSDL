@@ -10,7 +10,7 @@ GameObject::GameObject(const char *img_path, int xPos, int yPos)
     this->m_objRect.h = 128;
 };
 
-void GameObject::Render()
+GameObject::~GameObject()
 {
-    SDL_RenderCopy(Game::Renderer, this->m_objTexture, NULL, &this->m_objRect);
+    SDL_DestroyTexture(this->m_objTexture);
 }

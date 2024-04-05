@@ -9,7 +9,7 @@ SDL_Renderer *Game::Renderer = nullptr;
 SDL_Rect rect;
 Player *player = nullptr;
 
-Game::Game(const char *title, int screen_xpos, int screen_ypos, int screen_width, int screen_height)
+Game::Game(const char *username, const char *title, int screen_xpos, int screen_ypos, int screen_width, int screen_height)
     : m_screen_xpos(screen_xpos), m_screen_ypos(screen_ypos), m_screen_width(screen_width), m_screen_height(screen_height)
 {
 
@@ -40,7 +40,7 @@ Game::Game(const char *title, int screen_xpos, int screen_ypos, int screen_width
     }
 
     console = new Console(0, m_screen_height / 2, m_screen_width, m_screen_height / 2, {95, 200, 200, 1});
-    player = new Player("assets/player/idle.png", m_screen_width - (m_screen_width / 2), 20);
+    player = new Player(username, "assets/player/idle.png", m_screen_width - (m_screen_width / 2), 20);
     if (!_initMarkers())
     {
         std::cout << "[f. err] Game failed to initialize markers " << std::endl;
@@ -121,26 +121,32 @@ void Game::Update()
 
     if (!_quitState)
     {
-        if (player->m_objRect.x > m_screen_width - 150)
+        if (!_catchState || !_pokedexState || !_achievementState)
         {
-            m_current_gstate = STATE::_GSTATE_ACHIEVEMENTS;
-        }
-        else if (player->m_objRect.x < 0)
-        {
-            m_current_gstate = STATE::_GSTATE_POKEDEX;
-        }
-        else if (player->m_objRect.y > m_screen_height / 2 - 100)
-        {
-            m_current_gstate = STATE::_GSTATE_QUIT;
-            _quitState = true;
-        }
-        else if (player->m_objRect.y < 0)
-        {
-            m_current_gstate = STATE::_GSTATE_CATCH;
-        }
-        else
-        {
-            m_current_gstate = STATE::_GSTATE_MENU;
+            if (player->m_objRect.x > m_screen_width - 150)
+            {
+                m_current_gstate = STATE::_GSTATE_ACHIEVEMENTS;
+                _achievementState = true;
+            }
+            else if (player->m_objRect.x < 0)
+            {
+                m_current_gstate = STATE::_GSTATE_POKEDEX;
+                _pokedexState = true;
+            }
+            else if (player->m_objRect.y > m_screen_height / 2 - 100)
+            {
+                m_current_gstate = STATE::_GSTATE_QUIT;
+                _quitState = true;
+            }
+            else if (player->m_objRect.y < 0)
+            {
+                m_current_gstate = STATE::_GSTATE_CATCH;
+                _catchState = true;
+            }
+            else
+            {
+                m_current_gstate = STATE::_GSTATE_MENU;
+            }
         }
     }
 
