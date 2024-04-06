@@ -4,12 +4,19 @@
 
 Pokemon::Pokemon(const char *name, const char *img_path, int xPos, int yPos) : GameObject(img_path, xPos, yPos)
 {
-
+    _spawn();
     this->m_objTexture = Texture::TextureManager::LoadTexture(img_path);
     this->m_nameSerializable = name;
-    // TO DO FIX THIS
-    this->m_nameBox = new Textbox({this->m_objRect.x + (this->m_objRect.w / 2), this->m_objRect.y + 20, 50, 10}, {255, 255, 255, 255}, m_nameSerializable.c_str(), 12);
+    this->m_nameBox = new Textbox({this->m_objRect.x, this->m_objRect.y - 20, 100, 20}, {255, 255, 255, 255}, m_nameSerializable.c_str(), 12);
 };
+
+void Pokemon::_spawn()
+{
+    this->m_objRect.x = 500;
+    this->m_objRect.y = 150;
+    this->m_objRect.w = 64;
+    this->m_objRect.h = 64;
+}
 
 void Pokemon::Render()
 {
@@ -19,6 +26,7 @@ void Pokemon::Render()
 
 void Pokemon::Update()
 {
+    // maybe make pokemon move around a little?
 }
 
 Pokemon::~Pokemon()

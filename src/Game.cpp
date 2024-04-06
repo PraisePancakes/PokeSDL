@@ -117,11 +117,35 @@ int Game::GetScreenYPos() const
     return this->m_screen_ypos;
 };
 
+void Game::_establishBoundaries()
+{
+    if (player->m_objRect.y >= m_screen_height / 2 - 75)
+    {
+        player->m_objRect.y -= 1;
+    }
+
+    if (_lockState)
+    {
+
+        if (m_current_gstate != STATE::_GSTATE_MENU)
+        {
+            if (player->m_objRect.x >= m_screen_width - 150)
+            {
+                player->m_objRect.x -= 1;
+            }
+            if (player->m_objRect.y <= 0)
+            {
+                player->m_objRect.y += 1;
+            }
+        }
+    }
+};
+
 void Game::Update()
 {
     // console->Update()
     player->Update();
-
+    _establishBoundaries();
     if (!_lockState)
     {
         if (player->m_objRect.x > m_screen_width - 150) // achievement state
@@ -219,6 +243,7 @@ void Game::Render()
 
     if (m_current_gstate == STATE::_GSTATE_MENU)
     {
+        // render menu map
         for (int i = 0; i < 4; i++)
         {
             m_markers[i]->Render();
@@ -284,6 +309,8 @@ void Game::_clean()
 Game::~Game()
 {
     console->~Console();
+    delete this->m_pokemonStorage;
+    delete this->m_randomPokemon;
     delete console;
     _clean();
 }
