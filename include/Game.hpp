@@ -31,6 +31,7 @@ class Game
     Pokemon *m_randomPokemon = nullptr;
     bool _initMarkers();
     void _establishBoundaries();
+    bool m_generateNewPokemon;
 
 public:
     Game(const char *username, const char *title, int screen_xpos, int screen_ypos, int screen_width, int screen_height);

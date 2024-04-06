@@ -4,10 +4,10 @@
 GameObject::GameObject(const char *img_path, int xPos, int yPos)
 {
     this->m_objTexture = Texture::TextureManager::LoadTexture(img_path);
-    this->m_objRect.x = xPos;
-    this->m_objRect.y = yPos;
-    this->m_objRect.w = 128;
-    this->m_objRect.h = 128;
+    this->ObjRect.x = xPos;
+    this->ObjRect.y = yPos;
+    this->ObjRect.w = 128;
+    this->ObjRect.h = 128;
 };
 
 GameObject::~GameObject()

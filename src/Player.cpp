@@ -9,7 +9,7 @@ Player::Player(const char *username, const char *img_path, int xPos, int yPos) :
     m_movementState[static_cast<int>(_MOVING_STATE::__STATE_DOWN)] = false;
     m_movementState[static_cast<int>(_MOVING_STATE::__STATE_UP)] = false;
     m_nameSerializable = username;
-    m_nameBox = new Textbox({this->m_objRect.x + (this->m_objRect.w / 2), this->m_objRect.y + 20, 50, 10}, {255, 255, 255, 255}, m_nameSerializable.c_str(), 12);
+    m_nameBox = new Textbox({this->ObjRect.x + (this->ObjRect.w / 2), this->ObjRect.y + 20, 50, 10}, {255, 255, 255, 255}, m_nameSerializable.c_str(), 12);
 
     m_moving = false;
 };
@@ -17,13 +17,13 @@ Player::Player(const char *username, const char *img_path, int xPos, int yPos) :
 void Player::Render()
 {
     this->m_nameBox->Render();
-    SDL_RenderCopy(Game::Renderer, this->m_objTexture, NULL, &this->m_objRect);
+    SDL_RenderCopy(Game::Renderer, this->m_objTexture, NULL, &this->ObjRect);
 }
 
 void Player::CenterPos()
 {
-    this->m_objRect.x = 550;
-    this->m_objRect.y = 150;
+    this->ObjRect.x = 550;
+    this->ObjRect.y = 150;
 }
 
 void Player::Update()
@@ -33,19 +33,19 @@ void Player::Update()
         this->m_objTexture = Texture::TextureManager::LoadTexture("assets/player/run.png");
         if (m_movementState[static_cast<int>(_MOVING_STATE::__STATE_LEFT)] == true)
         {
-            m_objRect.x -= __MOVEMENT_SPEED__;
+            ObjRect.x -= __MOVEMENT_SPEED__;
         }
         if (m_movementState[static_cast<int>(_MOVING_STATE::__STATE_RIGHT)] == true)
         {
-            m_objRect.x += __MOVEMENT_SPEED__;
+            ObjRect.x += __MOVEMENT_SPEED__;
         }
         if (m_movementState[static_cast<int>(_MOVING_STATE::__STATE_DOWN)] == true)
         {
-            m_objRect.y += __MOVEMENT_SPEED__;
+            ObjRect.y += __MOVEMENT_SPEED__;
         }
         if (m_movementState[static_cast<int>(_MOVING_STATE::__STATE_UP)] == true)
         {
-            m_objRect.y -= __MOVEMENT_SPEED__;
+            ObjRect.y -= __MOVEMENT_SPEED__;
         }
     }
     else
@@ -53,8 +53,8 @@ void Player::Update()
         this->m_objTexture = Texture::TextureManager::LoadTexture("assets/player/idle.png");
     }
 
-    this->m_nameBox->m_boxRect.x = this->m_objRect.x + (this->m_objRect.w / 4);
-    this->m_nameBox->m_boxRect.y = this->m_objRect.y + 20;
+    this->m_nameBox->m_boxRect.x = this->ObjRect.x + (this->ObjRect.w / 4);
+    this->m_nameBox->m_boxRect.y = this->ObjRect.y + 20;
 }
 
 void Player::HandleInput(const SDL_Event *e)

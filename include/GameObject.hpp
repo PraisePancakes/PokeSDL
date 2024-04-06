@@ -9,7 +9,7 @@ protected:
 
 public:
     GameObject(const char *img_path, int xPos, int yPos);
-    SDL_Rect m_objRect;
+    SDL_Rect ObjRect;
     virtual void Render() = 0; // Render is now a virtual because player render will be different from each other object
     virtual void Update() = 0; // update can be different for children, where each child has its own updateable states
 

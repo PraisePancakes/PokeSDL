@@ -49,6 +49,7 @@ Game::Game(const char *username, const char *title, int screen_xpos, int screen_
 
     m_pokemonStorage = new Storage::Pokemons::PokemonStorage();
 
+    m_generateNewPokemon = false;
     m_current_gstate = STATE::_GSTATE_MENU;
     m_running = true;
 };
@@ -119,9 +120,9 @@ int Game::GetScreenYPos() const
 
 void Game::_establishBoundaries()
 {
-    if (player->m_objRect.y >= m_screen_height / 2 - 75)
+    if (player->ObjRect.y >= m_screen_height / 2 - 75)
     {
-        player->m_objRect.y -= 1;
+        player->ObjRect.y -= 1;
     }
 
     if (_lockState)
@@ -129,15 +130,45 @@ void Game::_establishBoundaries()
 
         if (m_current_gstate != STATE::_GSTATE_MENU)
         {
-            if (player->m_objRect.x >= m_screen_width - 150)
+            if (player->ObjRect.x >= m_screen_width - 150)
             {
-                player->m_objRect.x -= 1;
+                player->ObjRect.x -= 1;
             }
-            if (player->m_objRect.y <= 0)
+            if (player->ObjRect.y <= 0)
             {
-                player->m_objRect.y += 1;
+                player->ObjRect.y += 1;
+            }
+            if (player->ObjRect.x < -20)
+            {
+                player->ObjRect.x += 1;
             }
         }
+        m_generateNewPokemon = false;
+    }
+    if (!_lockState)
+    {
+        if (player->ObjRect.x > m_screen_width - 150) // achievement state
+        {
+            m_current_gstate = STATE::_GSTATE_ACHIEVEMENTS;
+            _lockState = true;
+        }
+        else if (player->ObjRect.x < 0 && player->ObjRect.y < m_screen_width / 4) // pokedex state
+        {
+            m_current_gstate = STATE::_GSTATE_POKEDEX;
+            _lockState = true;
+        }
+        else if (player->ObjRect.y > m_screen_height / 2 - 100) // quit state
+        {
+            m_current_gstate = STATE::_GSTATE_QUIT;
+            _lockState = true;
+        }
+        else if (player->ObjRect.y < 0) // catch state
+        {
+            m_current_gstate = STATE::_GSTATE_CATCH;
+            _lockState = true;
+        }
+
+        m_generateNewPokemon = true;
     }
 };
 
@@ -146,29 +177,6 @@ void Game::Update()
     // console->Update()
     player->Update();
     _establishBoundaries();
-    if (!_lockState)
-    {
-        if (player->m_objRect.x > m_screen_width - 150) // achievement state
-        {
-            m_current_gstate = STATE::_GSTATE_ACHIEVEMENTS;
-            _lockState = true;
-        }
-        else if (player->m_objRect.x < 0 && player->m_objRect.y < m_screen_width / 4) // pokedex state
-        {
-            m_current_gstate = STATE::_GSTATE_POKEDEX;
-            _lockState = true;
-        }
-        else if (player->m_objRect.y > m_screen_height / 2 - 100) // quit state
-        {
-            m_current_gstate = STATE::_GSTATE_QUIT;
-            _lockState = true;
-        }
-        else if (player->m_objRect.y < 0) // catch state
-        {
-            m_current_gstate = STATE::_GSTATE_CATCH;
-            _lockState = true;
-        }
-    }
 
     switch (m_current_gstate)
     {
@@ -176,7 +184,7 @@ void Game::Update()
         std::cout << "POKEDEX" << std::endl;
 
         // display pokedex list
-        if (player->m_objRect.x < 0 && player->m_objRect.y > m_screen_width / 4) // enter Pokedex state
+        if (player->ObjRect.x < 0 && player->ObjRect.y >= m_screen_width / 4) // enter Pokedex state
         {
             player->CenterPos();
             if (_lockState) // back to menu
@@ -188,20 +196,20 @@ void Game::Update()
         break;
     case STATE::_GSTATE_CATCH:
         std::cout << "CATCH" << std::endl;
-        if (player->m_objRect.x < 0 && _lockState)
+        if (player->ObjRect.x < 0 && _lockState)
         {
             m_current_gstate = STATE::_GSTATE_MENU;
             player->CenterPos();
             _lockState = false;
         }
-        else
+        else if (m_generateNewPokemon)
         {
             m_randomPokemon = m_pokemonStorage->GetRandomPokemon();
         }
         break;
     case STATE::_GSTATE_ACHIEVEMENTS:
         std::cout << "ACHIEVEMENTS" << std::endl;
-        if (player->m_objRect.x < 0 && _lockState)
+        if (player->ObjRect.x < 0 && _lockState)
         {
             m_current_gstate = STATE::_GSTATE_MENU;
             player->CenterPos();
@@ -214,11 +222,11 @@ void Game::Update()
 
         break;
     case STATE::_GSTATE_QUIT:
-        if (player->m_objRect.x < 0 && _lockState) // quit game
+        if (player->ObjRect.x < 0 && _lockState) // quit game
         {
             m_running = false;
         }
-        else if (player->m_objRect.x >= m_screen_width - 150) // dont quit game
+        else if (player->ObjRect.x >= m_screen_width - 150) // dont quit game
         {
             m_current_gstate = STATE::_GSTATE_MENU;
             player->CenterPos();
