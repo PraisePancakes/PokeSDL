@@ -13,6 +13,24 @@ Game::Game(const char *username, const char *title, int screen_xpos, int screen_
     : m_screen_xpos(screen_xpos), m_screen_ypos(screen_ypos), m_screen_width(screen_width), m_screen_height(screen_height)
 {
 
+    _initSDLContext(title, m_screen_xpos, m_screen_ypos, m_screen_width, m_screen_height);
+    console = new Console(0, m_screen_height / 2, m_screen_width, m_screen_height / 2, {95, 200, 200, 1});
+    player = new Player(username, "assets/player/idle.png", m_screen_width - (m_screen_width / 2), 20);
+    if (!_initMarkers())
+    {
+        std::cout << "[f. err] Game failed to initialize markers " << std::endl;
+        exit(EXIT_FAILURE);
+    };
+
+    m_pokemonStorage = new Storage::Pokemons::PokemonStorage();
+
+    m_generateNewPokemon = false;
+    m_current_gstate = STATE::_GSTATE_MENU;
+    m_running = true;
+};
+
+void Game::_initSDLContext(const char *title, int screen_xpos, int screen_ypos, int screen_width, int screen_height)
+{
     if (SDL_Init(SDL_INIT_EVERYTHING) < 0)
     {
         std::cout << "[f. err] SDL failed to initialize sub-systems " << SDL_GetError() << std::endl;
@@ -38,21 +56,7 @@ Game::Game(const char *username, const char *title, int screen_xpos, int screen_
         std::cout << "[f. err] SDL failed to initialize renderer " << SDL_GetError() << std::endl;
         exit(EXIT_FAILURE);
     }
-
-    console = new Console(0, m_screen_height / 2, m_screen_width, m_screen_height / 2, {95, 200, 200, 1});
-    player = new Player(username, "assets/player/idle.png", m_screen_width - (m_screen_width / 2), 20);
-    if (!_initMarkers())
-    {
-        std::cout << "[f. err] Game failed to initialize markers " << std::endl;
-        exit(EXIT_FAILURE);
-    };
-
-    m_pokemonStorage = new Storage::Pokemons::PokemonStorage();
-
-    m_generateNewPokemon = false;
-    m_current_gstate = STATE::_GSTATE_MENU;
-    m_running = true;
-};
+}
 
 bool Game::_initMarkers()
 {
@@ -205,6 +209,9 @@ void Game::Update()
         else if (m_generateNewPokemon)
         {
             m_randomPokemon = m_pokemonStorage->GetRandomPokemon();
+
+            const std::string pokemonString = m_randomPokemon->BuildSpawnString();
+            console->PushLog(pokemonString.c_str());
         }
         break;
     case STATE::_GSTATE_ACHIEVEMENTS:

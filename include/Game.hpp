@@ -32,6 +32,7 @@ class Game
     bool _initMarkers();
     void _establishBoundaries();
     bool m_generateNewPokemon;
+    void _initSDLContext(const char *title, int screen_xpos, int screen_ypos, int screen_width, int screen_height);
 
 public:
     Game(const char *username, const char *title, int screen_xpos, int screen_ypos, int screen_width, int screen_height);

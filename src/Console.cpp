@@ -6,6 +6,7 @@
 
 SDL_Color textColor;
 SDL_Rect titleRect;
+SDL_Rect logRect;
 
 Console::Console(int console_xpos, int console_ypos, int console_width, int console_height, SDL_Color console_color)
 {
@@ -15,11 +16,24 @@ Console::Console(int console_xpos, int console_ypos, int console_width, int cons
     this->m_consoleCanvas.h = console_height;
     this->m_consoleCanvas.y = console_ypos;
     this->m_consoleColor = console_color;
-
     titleRect = {console_xpos + 20, console_ypos + 20, 100, 25};
     textColor = {0, 0, 0, 255};
 
     this->m_title = new Textbox(titleRect, textColor, "Game Log", 24);
+}
+
+void Console::PushLog(const char *logString)
+{
+    static int padding = 50;
+    SDL_Rect logRect = {
+        this->m_title->m_boxRect.x,
+        this->m_title->m_boxRect.y + padding,
+        200,
+        20};
+
+    Textbox *logText = new Textbox(logRect, textColor, logString, 24);
+    this->m_log.push_back(logText);
+    padding += 50;
 }
 void Console::Render()
 {
@@ -35,6 +49,11 @@ void Console::Render()
     };
 
     this->m_title->Render();
+
+    for (size_t i = 0; i < this->m_log.size(); i++)
+    {
+        this->m_log[i]->Render();
+    }
 }
 
 void Console::Update(){

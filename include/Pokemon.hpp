@@ -3,13 +3,14 @@
 
 class Pokemon : public GameObject
 {
-    std::string m_nameSerializable;
+
     Textbox *m_nameBox;
     void _spawn();
+    std::string m_nameSerializable;
 
 public:
     Pokemon(const char *name, const char *img_path, int xPos, int yPos);
-
+    const std::string BuildSpawnString() const;
     void Update() override;
     void Render() override;
 
