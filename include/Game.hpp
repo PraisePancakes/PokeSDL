@@ -2,6 +2,7 @@
 #include "../lib/SDL2/include/SDL2/SDL.h"
 #include "Textbox.hpp"
 #include <vector>
+#include "PokemonStorage.hpp"
 
 enum class STATE
 {
@@ -26,7 +27,8 @@ class Game
     Textbox *m_quitMarkers[3];
     Textbox *m_backMarker;
     bool _lockState;
-
+    Storage::Pokemons::PokemonStorage *m_pokemonStorage;
+    Pokemon *m_randomPokemon = nullptr;
     bool _initMarkers();
 
 public:

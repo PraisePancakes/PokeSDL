@@ -4,10 +4,10 @@
 Player::Player(const char *username, const char *img_path, int xPos, int yPos) : GameObject(img_path, xPos, yPos)
 {
 
-    m_movementState[(int)(_MOVING_STATE::__STATE_LEFT)] = false;
-    m_movementState[(int)(_MOVING_STATE::__STATE_RIGHT)] = false;
-    m_movementState[(int)(_MOVING_STATE::__STATE_DOWN)] = false;
-    m_movementState[(int)(_MOVING_STATE::__STATE_UP)] = false;
+    m_movementState[static_cast<int>(_MOVING_STATE::__STATE_LEFT)] = false;
+    m_movementState[static_cast<int>(_MOVING_STATE::__STATE_RIGHT)] = false;
+    m_movementState[static_cast<int>(_MOVING_STATE::__STATE_DOWN)] = false;
+    m_movementState[static_cast<int>(_MOVING_STATE::__STATE_UP)] = false;
     m_nameSerializable = username;
     m_nameBox = new Textbox({this->m_objRect.x + (this->m_objRect.w / 2), this->m_objRect.y + 20, 50, 10}, {255, 255, 255, 255}, m_nameSerializable.c_str(), 12);
 
@@ -31,19 +31,19 @@ void Player::Update()
     if (m_moving)
     {
         this->m_objTexture = Texture::TextureManager::LoadTexture("assets/player/run.png");
-        if (m_movementState[(int)(_MOVING_STATE::__STATE_LEFT)] == true)
+        if (m_movementState[static_cast<int>(_MOVING_STATE::__STATE_LEFT)] == true)
         {
             m_objRect.x -= __MOVEMENT_SPEED__;
         }
-        if (m_movementState[(int)(_MOVING_STATE::__STATE_RIGHT)] == true)
+        if (m_movementState[static_cast<int>(_MOVING_STATE::__STATE_RIGHT)] == true)
         {
             m_objRect.x += __MOVEMENT_SPEED__;
         }
-        if (m_movementState[(int)(_MOVING_STATE::__STATE_DOWN)] == true)
+        if (m_movementState[static_cast<int>(_MOVING_STATE::__STATE_DOWN)] == true)
         {
             m_objRect.y += __MOVEMENT_SPEED__;
         }
-        if (m_movementState[(int)(_MOVING_STATE::__STATE_UP)] == true)
+        if (m_movementState[static_cast<int>(_MOVING_STATE::__STATE_UP)] == true)
         {
             m_objRect.y -= __MOVEMENT_SPEED__;
         }
@@ -102,4 +102,11 @@ void Player::HandleInput(const SDL_Event *e)
 
     // Check if any movement key is pressed
     m_moving = m_movementState.any();
+}
+
+Player::~Player()
+{
+
+    SDL_DestroyTexture(this->m_objTexture);
+    delete this->m_nameBox;
 }

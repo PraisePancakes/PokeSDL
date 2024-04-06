@@ -47,6 +47,8 @@ Game::Game(const char *username, const char *title, int screen_xpos, int screen_
         exit(EXIT_FAILURE);
     };
 
+    m_pokemonStorage = new Storage::Pokemons::PokemonStorage();
+
     m_current_gstate = STATE::_GSTATE_MENU;
     m_running = true;
 };
@@ -170,7 +172,7 @@ void Game::Update()
         }
         else
         {
-            // spawn a random pokemon
+            m_randomPokemon = m_pokemonStorage->GetRandomPokemon();
         }
         break;
     case STATE::_GSTATE_ACHIEVEMENTS:
@@ -238,6 +240,7 @@ void Game::Render()
     {
         // handle rendering catch
         m_backMarker->Render();
+        m_randomPokemon->Render();
     }
     else if (m_current_gstate == STATE::_GSTATE_ACHIEVEMENTS)
     {
