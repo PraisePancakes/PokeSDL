@@ -1,6 +1,7 @@
 #include "../include/Player.hpp"
 #include "../include/TextureManager.hpp"
 #define __MOVEMENT_SPEED__ 1
+
 Player::Player(const char *username, const char *img_path, int xPos, int yPos) : GameObject(img_path, xPos, yPos)
 {
 
@@ -10,9 +11,25 @@ Player::Player(const char *username, const char *img_path, int xPos, int yPos) :
     m_movementState[static_cast<int>(_MOVING_STATE::__STATE_UP)] = false;
     m_nameSerializable = username;
     m_nameBox = new Textbox({this->ObjRect.x + (this->ObjRect.w / 2), this->ObjRect.y + 20, 50, 10}, {255, 255, 255, 255}, m_nameSerializable.c_str(), 12);
-
+    _initBallInv();
     m_moving = false;
 };
+
+void Player::_initBallInv()
+{
+    m_ballInv[0] = new Ball("Pokeball", "assets/ball/pokeball.png", this->ObjRect.x, 300, BALLTYPE::__TYPE_POKEBALL);
+    m_ballInv[1] = new Ball("Greatball", "assets/ball/greatball.png", this->ObjRect.x + 100, 300, BALLTYPE::__TYPE_GREATBALL);
+    m_ballInv[2] = new Ball("Ultraball", "assets/ball/ultraball.png", this->ObjRect.x + 200, 300, BALLTYPE::__TYPE_ULTRABALL);
+    m_ballInv[3] = new Ball("Masterball", "assets/ball/masterball.png", this->ObjRect.x + 300, 300, BALLTYPE::__TYPE_MASTERBALL);
+}
+
+void Player::RenderBallInventory() const
+{
+    for (size_t i = 0; i < 4; i++)
+    {
+        m_ballInv[i]->Render();
+    }
+}
 
 void Player::Render()
 {

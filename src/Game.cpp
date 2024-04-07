@@ -25,7 +25,7 @@ Game::Game(const char *username, const char *title, int screen_xpos, int screen_
     m_pokemonStorage = new Storage::Pokemons::PokemonStorage();
 
     m_generateNewPokemon = false;
-    m_current_gstate = STATE::_GSTATE_MENU;
+    m_current_gstate = STATE::__GSTATE_MENU;
     m_running = true;
 };
 
@@ -132,7 +132,7 @@ void Game::_establishBoundaries()
     if (_lockState)
     {
 
-        if (m_current_gstate != STATE::_GSTATE_MENU)
+        if (m_current_gstate != STATE::__GSTATE_MENU)
         {
             if (player->ObjRect.x >= m_screen_width - 150)
             {
@@ -153,22 +153,22 @@ void Game::_establishBoundaries()
     {
         if (player->ObjRect.x > m_screen_width - 150) // achievement state
         {
-            m_current_gstate = STATE::_GSTATE_ACHIEVEMENTS;
+            m_current_gstate = STATE::__GSTATE_ACHIEVEMENTS;
             _lockState = true;
         }
         else if (player->ObjRect.x < 0 && player->ObjRect.y < m_screen_width / 4) // pokedex state
         {
-            m_current_gstate = STATE::_GSTATE_POKEDEX;
+            m_current_gstate = STATE::__GSTATE_POKEDEX;
             _lockState = true;
         }
         else if (player->ObjRect.y > m_screen_height / 2 - 100) // quit state
         {
-            m_current_gstate = STATE::_GSTATE_QUIT;
+            m_current_gstate = STATE::__GSTATE_QUIT;
             _lockState = true;
         }
         else if (player->ObjRect.y < 0) // catch state
         {
-            m_current_gstate = STATE::_GSTATE_CATCH;
+            m_current_gstate = STATE::__GSTATE_CATCH;
             _lockState = true;
         }
 
@@ -184,7 +184,7 @@ void Game::Update()
 
     switch (m_current_gstate)
     {
-    case STATE::_GSTATE_POKEDEX:
+    case STATE::__GSTATE_POKEDEX:
         std::cout << "POKEDEX" << std::endl;
 
         // display pokedex list
@@ -193,16 +193,16 @@ void Game::Update()
             player->CenterPos();
             if (_lockState) // back to menu
             {
-                m_current_gstate = STATE::_GSTATE_MENU;
+                m_current_gstate = STATE::__GSTATE_MENU;
                 _lockState = false; // Unlock the state when returning to menu
             }
         }
         break;
-    case STATE::_GSTATE_CATCH:
+    case STATE::__GSTATE_CATCH:
         std::cout << "CATCH" << std::endl;
         if (player->ObjRect.x < 0 && _lockState)
         {
-            m_current_gstate = STATE::_GSTATE_MENU;
+            m_current_gstate = STATE::__GSTATE_MENU;
             player->CenterPos();
             _lockState = false;
         }
@@ -216,11 +216,11 @@ void Game::Update()
             // handle catch here
         }
         break;
-    case STATE::_GSTATE_ACHIEVEMENTS:
+    case STATE::__GSTATE_ACHIEVEMENTS:
         std::cout << "ACHIEVEMENTS" << std::endl;
         if (player->ObjRect.x < 0 && _lockState)
         {
-            m_current_gstate = STATE::_GSTATE_MENU;
+            m_current_gstate = STATE::__GSTATE_MENU;
             player->CenterPos();
             _lockState = false;
         }
@@ -230,20 +230,20 @@ void Game::Update()
         }
 
         break;
-    case STATE::_GSTATE_QUIT:
+    case STATE::__GSTATE_QUIT:
         if (player->ObjRect.x < 0 && _lockState) // quit game
         {
             m_running = false;
         }
         else if (player->ObjRect.x >= m_screen_width - 150) // dont quit game
         {
-            m_current_gstate = STATE::_GSTATE_MENU;
+            m_current_gstate = STATE::__GSTATE_MENU;
             player->CenterPos();
             _lockState = false;
         }
         std::cout << "QUIT" << std::endl;
         break;
-    case STATE::_GSTATE_MENU:
+    case STATE::__GSTATE_MENU:
 
         std::cout << "MENU" << std::endl;
         break;
@@ -258,7 +258,7 @@ void Game::Render()
     console->Render();
     player->Render();
 
-    if (m_current_gstate == STATE::_GSTATE_MENU)
+    if (m_current_gstate == STATE::__GSTATE_MENU)
     {
         // render menu map
         for (int i = 0; i < 4; i++)
@@ -266,25 +266,27 @@ void Game::Render()
             m_markers[i]->Render();
         }
     }
-    else if (m_current_gstate == STATE::_GSTATE_QUIT)
+    else if (m_current_gstate == STATE::__GSTATE_QUIT)
     {
         for (int i = 0; i < 3; i++)
         {
             m_quitMarkers[i]->Render();
         }
     }
-    else if (m_current_gstate == STATE::_GSTATE_POKEDEX)
+    else if (m_current_gstate == STATE::__GSTATE_POKEDEX)
     {
         // handle rendering pokedex
         m_backMarker->Render();
     }
-    else if (m_current_gstate == STATE::_GSTATE_CATCH)
+    else if (m_current_gstate == STATE::__GSTATE_CATCH)
     {
         // handle rendering catch
+        player->RenderBallInventory();
+
         m_backMarker->Render();
         m_randomPokemon->Render();
     }
-    else if (m_current_gstate == STATE::_GSTATE_ACHIEVEMENTS)
+    else if (m_current_gstate == STATE::__GSTATE_ACHIEVEMENTS)
     {
         m_backMarker->Render();
     }

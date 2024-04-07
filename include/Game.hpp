@@ -6,11 +6,11 @@
 
 enum class STATE
 {
-    _GSTATE_POKEDEX,
-    _GSTATE_CATCH,
-    _GSTATE_ACHIEVEMENTS,
-    _GSTATE_QUIT,
-    _GSTATE_MENU
+    __GSTATE_POKEDEX,
+    __GSTATE_CATCH,
+    __GSTATE_ACHIEVEMENTS,
+    __GSTATE_QUIT,
+    __GSTATE_MENU
 };
 
 class Game
