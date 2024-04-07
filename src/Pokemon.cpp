@@ -18,6 +18,7 @@ void Pokemon::_spawn()
     this->ObjRect.h = 64;
 }
 
+
 const std::string Pokemon::BuildSpawnString() const
 {
     std::string stringBuilder = "";

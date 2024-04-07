@@ -1,7 +1,7 @@
 #include "../include/Console.hpp"
 #include "../lib/SDL2TTF/include/SDL2/SDL_ttf.h"
 #include "../include/TextureManager.hpp"
-
+#include <algorithm>
 #include <iostream>
 
 SDL_Color textColor;
@@ -24,17 +24,26 @@ Console::Console(int console_xpos, int console_ypos, int console_width, int cons
 
 void Console::PushLog(const char *logString)
 {
-    static int padding = 50;
+
     SDL_Rect logRect = {
         this->m_title->m_boxRect.x,
-        this->m_title->m_boxRect.y + padding,
+        this->m_title->m_boxRect.y,
         200,
         20};
 
     Textbox *logText = new Textbox(logRect, textColor, logString, 24);
-    this->m_log.push_back(logText);
-    padding += 50;
+    this->m_log.insert(this->m_log.begin(), logText);
 }
+void Console::_updateLogItemPositions()
+{
+    int yOffset = 50;
+    for (const auto &logText : this->m_log)
+    {
+        logText->m_boxRect.y = this->m_title->m_boxRect.y + yOffset;
+        yOffset += 50;
+    }
+}
+
 void Console::Render()
 {
 
@@ -50,9 +59,10 @@ void Console::Render()
 
     this->m_title->Render();
 
-    for (size_t i = 0; i < this->m_log.size(); i++)
+    _updateLogItemPositions();
+    for (const auto &logText : this->m_log)
     {
-        this->m_log[i]->Render();
+        logText->Render();
     }
 }
 

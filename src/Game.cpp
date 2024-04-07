@@ -212,6 +212,8 @@ void Game::Update()
 
             const std::string pokemonString = m_randomPokemon->BuildSpawnString();
             console->PushLog(pokemonString.c_str());
+
+            // handle catch here
         }
         break;
     case STATE::_GSTATE_ACHIEVEMENTS:

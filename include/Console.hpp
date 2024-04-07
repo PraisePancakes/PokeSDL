@@ -10,6 +10,7 @@ class Console
     SDL_Color m_consoleColor;
     Textbox *m_title;
     std::vector<Textbox *> m_log;
+    void _updateLogItemPositions();
 
 public:
     Console(int screen_xpos, int screen_ypos, int screen_width, int screen_height, SDL_Color console_color);
