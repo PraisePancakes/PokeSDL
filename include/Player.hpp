@@ -19,6 +19,7 @@ class Player : public GameObject
     Textbox *m_nameBox;
     Ball *m_ballInv[4];
     void _initBallInv();
+    Ball *m_currentBall;
 
 public:
     Player(const char *username, const char *img_path, int xPos, int yPos);
@@ -26,6 +27,7 @@ public:
     void Update() override;
     void Render() override;
     void RenderBallInventory() const;
+    Ball *GetCurrentBall() const;
     void HandleInput(const SDL_Event *e);
     void CenterPos();
 

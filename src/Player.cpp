@@ -1,10 +1,12 @@
 #include "../include/Player.hpp"
 #include "../include/TextureManager.hpp"
 #define __MOVEMENT_SPEED__ 1
+#include <math.h>
 
 Player::Player(const char *username, const char *img_path, int xPos, int yPos) : GameObject(img_path, xPos, yPos)
 {
 
+    m_currentBall = nullptr;
     m_movementState[static_cast<int>(_MOVING_STATE::__STATE_LEFT)] = false;
     m_movementState[static_cast<int>(_MOVING_STATE::__STATE_RIGHT)] = false;
     m_movementState[static_cast<int>(_MOVING_STATE::__STATE_DOWN)] = false;
@@ -17,6 +19,11 @@ Player::Player(const char *username, const char *img_path, int xPos, int yPos) :
 
 void Player::_initBallInv()
 {
+    for (int i = 0; i < 4; i++)
+    {
+        m_ballInv[i] = nullptr;
+    }
+
     m_ballInv[0] = new Ball("Pokeball", "assets/ball/pokeball.png", this->ObjRect.x, 300, BALLTYPE::__TYPE_POKEBALL);
     m_ballInv[1] = new Ball("Greatball", "assets/ball/greatball.png", this->ObjRect.x + 100, 300, BALLTYPE::__TYPE_GREATBALL);
     m_ballInv[2] = new Ball("Ultraball", "assets/ball/ultraball.png", this->ObjRect.x + 200, 300, BALLTYPE::__TYPE_ULTRABALL);
@@ -72,6 +79,29 @@ void Player::Update()
 
     this->m_nameBox->m_boxRect.x = this->ObjRect.x + (this->ObjRect.w / 4);
     this->m_nameBox->m_boxRect.y = this->ObjRect.y + 20;
+    m_currentBall = nullptr;
+    for (int i = 0; i < 4; i++)
+    {
+        int playerCenterX = ObjRect.x + (ObjRect.w / 2);
+        int playerCenterY = ObjRect.y + (ObjRect.h / 2);
+        int ballCenterX = m_ballInv[i]->ObjRect.x + (m_ballInv[i]->ObjRect.w / 2);
+        int ballCenterY = m_ballInv[i]->ObjRect.y + (m_ballInv[i]->ObjRect.h / 2);
+        int distance = sqrt(pow(playerCenterX - ballCenterX, 2) + pow(playerCenterY - ballCenterY, 2));
+
+        int threshold = 50;
+
+        if (distance < threshold)
+        {
+
+            m_currentBall = m_ballInv[i];
+            break; // No need to check other balls
+        }
+    }
+}
+
+Ball *Player::GetCurrentBall() const
+{
+    return this->m_currentBall;
 }
 
 void Player::HandleInput(const SDL_Event *e)
@@ -123,7 +153,11 @@ void Player::HandleInput(const SDL_Event *e)
 
 Player::~Player()
 {
-
+    for (int i = 0; i < 4; i++)
+    {
+        delete m_ballInv[i];
+        m_ballInv[i] = nullptr;
+    }
     SDL_DestroyTexture(this->m_objTexture);
     delete this->m_nameBox;
 }

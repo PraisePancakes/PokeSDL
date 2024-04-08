@@ -13,6 +13,11 @@ void Textbox::Render()
     SDL_RenderCopy(Game::Renderer, this->m_boxTexture, NULL, &this->m_boxRect);
 };
 
+void Textbox::SetText(const char *text)
+{
+    this->m_boxTexture = Texture::TextureManager::LoadTTF(text, "assets/font/8bit.ttf", this->m_textColor, 12);
+}
+
 void Textbox::Print()
 {
 

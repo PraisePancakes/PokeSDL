@@ -5,7 +5,7 @@
 class Textbox
 {
     SDL_Texture *m_boxTexture;
-    
+
     SDL_Color m_textColor;
 
 public:
@@ -14,6 +14,6 @@ public:
     void Render();
     void Update();
     void Print();
-
+    void SetText(const char *text);
     ~Textbox();
 };

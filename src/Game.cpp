@@ -199,7 +199,7 @@ void Game::Update()
         }
         break;
     case STATE::__GSTATE_CATCH:
-        std::cout << "CATCH" << std::endl;
+
         if (player->ObjRect.x < 0 && _lockState)
         {
             m_current_gstate = STATE::__GSTATE_MENU;
@@ -213,6 +213,10 @@ void Game::Update()
             const std::string pokemonString = m_randomPokemon->BuildSpawnString();
             console->PushLog(pokemonString.c_str());
 
+            if (player->GetCurrentBall() != nullptr)
+            {
+                
+            }
             // handle catch here
         }
         break;
