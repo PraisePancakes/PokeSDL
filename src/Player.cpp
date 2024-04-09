@@ -1,6 +1,6 @@
 #include "../include/Player.hpp"
 #include "../include/TextureManager.hpp"
-#define __MOVEMENT_SPEED__ 1
+#define __MOVEMENT_SPEED__ 5
 #include <math.h>
 
 Player::Player(const char *username, const char *img_path, int xPos, int yPos) : GameObject(img_path, xPos, yPos)

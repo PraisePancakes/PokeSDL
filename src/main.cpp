@@ -12,13 +12,27 @@ int main(int argc, char *argv[])
 
     const int _WINDOW_WIDTH = 1024;
     const int _WINDOW_HEIGHT = 728;
-    Game *g = new Game(username.c_str(), "PokeSDL", SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, _WINDOW_WIDTH, _WINDOW_HEIGHT);
+    Game g(username.c_str(), "PokeSDL", SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, _WINDOW_WIDTH, _WINDOW_HEIGHT);
 
-    while (g->IsRunning())
+    const int TARGET_FPS = 60;
+    const int DELAY_TIME = 1000 / TARGET_FPS;
+
+    Uint32 frameStart, frameTime;
+
+    while (g.IsRunning())
     {
-        g->HandleEvents();
-        g->Render();
-        g->Update();
+        frameStart = SDL_GetTicks();
+
+        g.HandleEvents();
+        g.Render();
+        g.Update();
+
+        frameTime = SDL_GetTicks() - frameStart;
+
+        if (frameTime < DELAY_TIME)
+        {
+            SDL_Delay(DELAY_TIME - frameTime);
+        }
     }
 
     return EXIT_SUCCESS;
