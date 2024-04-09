@@ -181,7 +181,7 @@ void Game::Update()
     // console->Update()
     player->Update();
     _establishBoundaries();
-
+    console->Update();
     switch (m_current_gstate)
     {
     case STATE::__GSTATE_POKEDEX:
@@ -213,12 +213,33 @@ void Game::Update()
             const std::string pokemonString = m_randomPokemon->BuildSpawnString();
             console->PushLog(pokemonString.c_str());
 
-            if (player->GetCurrentBall() != nullptr)
-            {
-                
-            }
             // handle catch here
         }
+
+        if (player->GetCurrentBall() != player->GetPreviousBall())
+        {
+            SDL_Color color;
+            switch (player->GetCurrentBall()->BallType)
+            {
+            case BALLTYPE::__TYPE_POKEBALL:
+                color = {200, 0, 0, 255};
+                break;
+            case BALLTYPE::__TYPE_GREATBALL:
+                color = {0, 0, 200, 255};
+                break;
+            case BALLTYPE::__TYPE_ULTRABALL:
+                color = {100, 100, 10, 255};
+                break;
+            case BALLTYPE::__TYPE_MASTERBALL:
+                color = {110, 50, 200, 255};
+                break;
+            default:
+                color = {255, 255, 255, 255};
+                break;
+            }
+            std::string logTextBuilder = "You chose a " + player->GetCurrentBall()->m_nameSerializable;
+            console->PushLog(logTextBuilder.c_str(), color);
+        };
         break;
     case STATE::__GSTATE_ACHIEVEMENTS:
         std::cout << "ACHIEVEMENTS" << std::endl;

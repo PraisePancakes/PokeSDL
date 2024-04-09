@@ -20,6 +20,7 @@ class Player : public GameObject
     Ball *m_ballInv[4];
     void _initBallInv();
     Ball *m_currentBall;
+    Ball *m_previousBall;
 
 public:
     Player(const char *username, const char *img_path, int xPos, int yPos);
@@ -28,6 +29,7 @@ public:
     void Render() override;
     void RenderBallInventory() const;
     Ball *GetCurrentBall() const;
+    Ball *GetPreviousBall() const;
     void HandleInput(const SDL_Event *e);
     void CenterPos();
 

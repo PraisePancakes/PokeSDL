@@ -17,6 +17,7 @@ public:
     void Render();
     void Update();
     void PushLog(const char *logString);
+    void PushLog(const char *logString, SDL_Color textColor);
     void HandleConsoleEvents();
     ~Console();
 };

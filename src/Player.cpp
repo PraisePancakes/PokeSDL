@@ -7,6 +7,7 @@ Player::Player(const char *username, const char *img_path, int xPos, int yPos) :
 {
 
     m_currentBall = nullptr;
+    m_previousBall = nullptr;
     m_movementState[static_cast<int>(_MOVING_STATE::__STATE_LEFT)] = false;
     m_movementState[static_cast<int>(_MOVING_STATE::__STATE_RIGHT)] = false;
     m_movementState[static_cast<int>(_MOVING_STATE::__STATE_DOWN)] = false;
@@ -16,6 +17,10 @@ Player::Player(const char *username, const char *img_path, int xPos, int yPos) :
     _initBallInv();
     m_moving = false;
 };
+Ball *Player::GetPreviousBall() const
+{
+    return m_previousBall;
+}
 
 void Player::_initBallInv()
 {
@@ -79,7 +84,7 @@ void Player::Update()
 
     this->m_nameBox->m_boxRect.x = this->ObjRect.x + (this->ObjRect.w / 4);
     this->m_nameBox->m_boxRect.y = this->ObjRect.y + 20;
-    m_currentBall = nullptr;
+
     for (int i = 0; i < 4; i++)
     {
         int playerCenterX = ObjRect.x + (ObjRect.w / 2);
@@ -92,15 +97,16 @@ void Player::Update()
 
         if (distance < threshold)
         {
-
+            m_previousBall = m_currentBall;
             m_currentBall = m_ballInv[i];
-            break; // No need to check other balls
+            break;
         }
     }
 }
 
 Ball *Player::GetCurrentBall() const
 {
+
     return this->m_currentBall;
 }
 

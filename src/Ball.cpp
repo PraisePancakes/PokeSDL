@@ -16,7 +16,7 @@ Ball::Ball(const std::string &ball_name, const char *img_path, int xPos, int yPo
     this->ObjRect.h = 32;
     this->m_nameSerializable = ball_name;
     this->m_objTexture = Texture::TextureManager::LoadTexture(img_path);
-
+    this->BallType = type;
     this->m_nameBox = new Textbox({this->ObjRect.x, this->ObjRect.y + 30, 80, 30}, {255, 255, 255, 255}, " ", 12);
 };
 

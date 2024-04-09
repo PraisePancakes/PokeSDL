@@ -4,7 +4,7 @@
 #include <algorithm>
 #include <iostream>
 
-SDL_Color textColor;
+SDL_Color white;
 SDL_Rect titleRect;
 SDL_Rect logRect;
 
@@ -17,12 +17,24 @@ Console::Console(int console_xpos, int console_ypos, int console_width, int cons
     this->m_consoleCanvas.y = console_ypos;
     this->m_consoleColor = console_color;
     titleRect = {console_xpos + 20, console_ypos + 20, 100, 25};
-    textColor = {0, 0, 0, 255};
+    white = {0, 0, 0, 255};
 
-    this->m_title = new Textbox(titleRect, textColor, "Game Log", 24);
+    this->m_title = new Textbox(titleRect, white, "Game Log", 24);
 }
 
 void Console::PushLog(const char *logString)
+{
+    SDL_Rect logRect = {
+        this->m_title->m_boxRect.x,
+        this->m_title->m_boxRect.y,
+        200,
+        20};
+
+    Textbox *logText = new Textbox(logRect, white, logString, 24);
+    this->m_log.insert(this->m_log.begin(), logText);
+}
+
+void Console::PushLog(const char *logString, SDL_Color textColor)
 {
 
     SDL_Rect logRect = {
@@ -59,15 +71,15 @@ void Console::Render()
 
     this->m_title->Render();
 
-    _updateLogItemPositions();
     for (const auto &logText : this->m_log)
     {
         logText->Render();
     }
 }
 
-void Console::Update(){
-
+void Console::Update()
+{
+    _updateLogItemPositions();
 };
 
 void Console::HandleConsoleEvents(){
