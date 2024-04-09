@@ -37,10 +37,12 @@ class Game
 
 public:
     Game(const char *username, const char *title, int screen_xpos, int screen_ypos, int screen_width, int screen_height);
+    Game &operator=(const Game &) = delete;
     static SDL_Renderer *Renderer;
 
     void SetGameState(STATE gs);
 
+    
     int GetScreenWidth() const;
     int GetScreenHeight() const;
     int GetScreenXPos() const;

@@ -18,6 +18,10 @@ void Pokemon::_spawn()
     this->ObjRect.h = 64;
 }
 
+const std::string Pokemon::GetNameString() const
+{
+    return m_nameSerializable;
+}
 
 const std::string Pokemon::BuildSpawnString() const
 {

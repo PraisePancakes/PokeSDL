@@ -11,6 +11,14 @@ enum class _MOVING_STATE
     __STATE_UP,
 };
 
+enum class PLAYER_ERROR_CODE
+{
+    __OK,
+    __OK_THROW,
+    __NULL_AMOUNT,
+    __NULL_BALL,
+};
+
 class Player : public GameObject
 {
     std::bitset<4> m_movementState;
@@ -24,13 +32,14 @@ class Player : public GameObject
 
 public:
     Player(const char *username, const char *img_path, int xPos, int yPos);
-
+    PLAYER_ERROR_CODE ErrCode;
     void Update() override;
     void Render() override;
     void RenderBallInventory() const;
     Ball *GetCurrentBall() const;
     Ball *GetPreviousBall() const;
-    void HandleInput(const SDL_Event *e);
+    void NullifyBallState();
+    PLAYER_ERROR_CODE HandleInput(const SDL_Event *e);
     void CenterPos();
 
     ~Player();

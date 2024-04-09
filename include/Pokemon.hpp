@@ -11,6 +11,7 @@ class Pokemon : public GameObject
 public:
     Pokemon(const char *name, const char *img_path, int xPos, int yPos);
     const std::string BuildSpawnString() const;
+    const std::string GetNameString() const;
     void Update() override;
     void Render() override;
 

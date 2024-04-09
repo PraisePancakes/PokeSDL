@@ -8,6 +8,7 @@ Console *console = nullptr;
 SDL_Renderer *Game::Renderer = nullptr;
 SDL_Rect rect;
 Player *player = nullptr;
+// convert raw to smart ptrs
 
 Game::Game(const char *username, const char *title, int screen_xpos, int screen_ypos, int screen_width, int screen_height)
     : m_screen_xpos(screen_xpos), m_screen_ypos(screen_ypos), m_screen_width(screen_width), m_screen_height(screen_height)
@@ -212,8 +213,6 @@ void Game::Update()
 
             const std::string pokemonString = m_randomPokemon->BuildSpawnString();
             console->PushLog(pokemonString.c_str());
-
-            // handle catch here
         }
 
         if (player->GetCurrentBall() != player->GetPreviousBall())
@@ -240,6 +239,24 @@ void Game::Update()
             std::string logTextBuilder = "You chose a " + player->GetCurrentBall()->m_nameSerializable;
             console->PushLog(logTextBuilder.c_str(), color);
         };
+
+        if (player->ErrCode == PLAYER_ERROR_CODE::__OK_THROW)
+        {
+            std::string logTextBuilder = "You threw a " + player->GetCurrentBall()->m_nameSerializable + " at " + m_randomPokemon->GetNameString();
+
+            player->ErrCode = PLAYER_ERROR_CODE::__NULL_BALL;
+            console->PushLog(logTextBuilder.c_str(), {100, 255, 150, 255});
+            player->GetCurrentBall()->DecrementAmount();
+            player->NullifyBallState();
+        }
+        else if (player->ErrCode == PLAYER_ERROR_CODE::__NULL_AMOUNT)
+        {
+            player->ErrCode = PLAYER_ERROR_CODE::__NULL_BALL;
+            std::string logTextBuilder = "[ERROR] You have 0 " + player->GetCurrentBall()->m_nameSerializable + "s";
+            console->PushLog(logTextBuilder.c_str(), {255, 0, 0, 255});
+            player->NullifyBallState();
+        }
+
         break;
     case STATE::__GSTATE_ACHIEVEMENTS:
         std::cout << "ACHIEVEMENTS" << std::endl;
@@ -269,7 +286,7 @@ void Game::Update()
         std::cout << "QUIT" << std::endl;
         break;
     case STATE::__GSTATE_MENU:
-
+        player->NullifyBallState();
         std::cout << "MENU" << std::endl;
         break;
     }
@@ -325,13 +342,18 @@ void Game::HandleEvents()
 
     while (SDL_PollEvent(&e))
     {
-        player->HandleInput(&e);
+
         switch (e.type)
         {
         case SDL_QUIT:
             m_running = false;
             _clean();
         default:
+            PLAYER_ERROR_CODE err = player->HandleInput(&e);
+            if (err == PLAYER_ERROR_CODE::__NULL_BALL && m_current_gstate == STATE::__GSTATE_CATCH)
+            {
+                console->PushLog("[ERROR] No ball selected", {255, 0, 0, 255});
+            }
             break;
         }
     }

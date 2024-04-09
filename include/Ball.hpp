@@ -23,6 +23,7 @@ public:
     void Update() override;
     void Render() override;
     void DecrementAmount();
+    int GetAmount() const;
 
     ~Ball();
 };

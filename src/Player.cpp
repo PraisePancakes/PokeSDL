@@ -15,6 +15,7 @@ Player::Player(const char *username, const char *img_path, int xPos, int yPos) :
     m_nameSerializable = username;
     m_nameBox = new Textbox({this->ObjRect.x + (this->ObjRect.w / 2), this->ObjRect.y + 20, 50, 10}, {255, 255, 255, 255}, m_nameSerializable.c_str(), 12);
     _initBallInv();
+    ErrCode = PLAYER_ERROR_CODE::__OK;
     m_moving = false;
 };
 Ball *Player::GetPreviousBall() const
@@ -55,6 +56,12 @@ void Player::CenterPos()
     this->ObjRect.y = 150;
 }
 
+void Player::NullifyBallState()
+{
+    this->m_currentBall = nullptr;
+    this->m_previousBall = nullptr;
+}
+
 void Player::Update()
 {
     if (m_moving)
@@ -87,6 +94,7 @@ void Player::Update()
 
     for (int i = 0; i < 4; i++)
     {
+        m_ballInv[i]->Update();
         int playerCenterX = ObjRect.x + (ObjRect.w / 2);
         int playerCenterY = ObjRect.y + (ObjRect.h / 2);
         int ballCenterX = m_ballInv[i]->ObjRect.x + (m_ballInv[i]->ObjRect.w / 2);
@@ -110,8 +118,9 @@ Ball *Player::GetCurrentBall() const
     return this->m_currentBall;
 }
 
-void Player::HandleInput(const SDL_Event *e)
+PLAYER_ERROR_CODE Player::HandleInput(const SDL_Event *e)
 {
+    ErrCode = PLAYER_ERROR_CODE::__OK;
     if (e->key.type == SDL_KEYDOWN)
     {
         switch (e->key.keysym.sym)
@@ -127,6 +136,20 @@ void Player::HandleInput(const SDL_Event *e)
             break;
         case SDLK_RIGHT:
             m_movementState.set(static_cast<int>(_MOVING_STATE::__STATE_RIGHT));
+            break;
+        case SDLK_RETURN:
+            if (this->GetCurrentBall() == nullptr)
+            {
+                ErrCode = PLAYER_ERROR_CODE::__NULL_BALL;
+            }
+            else if (this->GetCurrentBall()->GetAmount() == 0)
+            {
+                ErrCode = PLAYER_ERROR_CODE::__NULL_AMOUNT;
+            }
+            else
+            {
+                ErrCode = PLAYER_ERROR_CODE::__OK_THROW;
+            }
             break;
         default:
             break;
@@ -148,6 +171,9 @@ void Player::HandleInput(const SDL_Event *e)
         case SDLK_RIGHT:
             m_movementState.reset(static_cast<int>(_MOVING_STATE::__STATE_RIGHT));
             break;
+        case SDLK_RETURN:
+            ErrCode = PLAYER_ERROR_CODE::__OK;
+            break;
         default:
             break;
         }
@@ -155,6 +181,7 @@ void Player::HandleInput(const SDL_Event *e)
 
     // Check if any movement key is pressed
     m_moving = m_movementState.any();
+    return ErrCode;
 }
 
 Player::~Player()

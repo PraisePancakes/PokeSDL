@@ -22,7 +22,8 @@ Ball::Ball(const std::string &ball_name, const char *img_path, int xPos, int yPo
 
 void Ball::DecrementAmount()
 {
-    this->m_amount -= 1;
+    if (this->m_amount > 0)
+        this->m_amount -= 1;
 }
 
 void Ball::Update()
@@ -31,6 +32,11 @@ void Ball::Update()
     std::string nameBoxBuilder = this->m_nameSerializable + " x " + amount_str;
     this->m_nameBox->SetText(nameBoxBuilder.c_str());
 };
+
+int Ball::GetAmount() const
+{
+    return this->m_amount;
+}
 
 void Ball::Render()
 {
