@@ -13,7 +13,8 @@ enum class BALLTYPE
 class Ball : public GameObject
 {
     int m_amount;
-
+    int m_ballMod;
+    int m_catchRate;
     Textbox *m_nameBox;
 
 public:
@@ -23,6 +24,7 @@ public:
     void Update() override;
     void Render() override;
     void DecrementAmount();
+    int GetCatchRate() const;
     int GetAmount() const;
 
     ~Ball();

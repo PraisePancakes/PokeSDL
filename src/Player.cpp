@@ -30,7 +30,7 @@ void Player::ThrowBall(const Ball &ball, const Pokemon &pokemon)
 
 void Player::RenderPokedex()
 {
-    UpdatePokedexDisplay();
+
     for (int i = 0; i < m_pokedex.size(); i++)
     {
         m_pokedex[i]->Render();
@@ -90,21 +90,19 @@ void Player::UpdatePokedexDisplay()
     {
         m_pokedex[i]->ObjRect.x = currentX;
         m_pokedex[i]->ObjRect.y = currentY;
-        m_pokedex[i]->Update();
+
         currentX += m_pokedex[i]->ObjRect.w + paddingX;
         if ((i + 1) % numCols == 0) // Move to the next row
         {
             currentX = startX;
             currentY += m_pokedex[i]->ObjRect.h + paddingY;
         }
-
-        m_pokedex[i]->Render();
     }
 }
 
 void Player::Update()
 {
-
+    UpdatePokedexDisplay();
     if (m_moving)
     {
         this->m_objTexture = Texture::TextureManager::LoadTexture("assets/player/run.png");

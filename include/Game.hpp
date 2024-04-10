@@ -28,7 +28,7 @@ class Game
     Textbox *m_backMarker;
     bool _lockState;
     Storage::Pokemons::PokemonStorage *m_pokemonStorage;
-    Pokemon *m_randomPokemon = nullptr;
+    Pokemon *m_randomPokemon;
     bool _initMarkers();
     void _establishBoundaries();
     bool m_generateNewPokemon;
@@ -42,7 +42,6 @@ public:
 
     void SetGameState(STATE gs);
 
-    
     int GetScreenWidth() const;
     int GetScreenHeight() const;
     int GetScreenXPos() const;

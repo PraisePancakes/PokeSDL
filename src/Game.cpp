@@ -248,7 +248,8 @@ void Game::Update()
 
             player->ErrCode = PLAYER_ERROR_CODE::__NULL_BALL;
             console->PushLog(logTextBuilder.c_str(), {100, 255, 150, 255});
-            player->ThrowBall(*player->GetCurrentBall(), *m_randomPokemon);
+            Pokemon *dexable = new Pokemon(*m_randomPokemon);
+            player->ThrowBall(*player->GetCurrentBall(), *dexable);
             player->NullifyBallState();
         }
         else if (player->ErrCode == PLAYER_ERROR_CODE::__NULL_AMOUNT)

@@ -34,6 +34,7 @@ const std::string Pokemon::BuildSpawnString() const
 
 void Pokemon::Render()
 {
+    Update();
     this->m_nameBox->Render();
     SDL_RenderCopy(Game::Renderer, this->m_objTexture, NULL, &this->ObjRect);
 };
@@ -42,7 +43,6 @@ void Pokemon::Update()
 {
     this->m_nameBox->m_boxRect.x = this->ObjRect.x;
     this->m_nameBox->m_boxRect.y = this->ObjRect.y - 20;
-
     // maybe make pokemon move around a little?
 }
 
