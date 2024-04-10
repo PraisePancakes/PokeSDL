@@ -36,7 +36,7 @@ class Player : public GameObject
 public:
     Player(const char *username, const char *img_path, int xPos, int yPos);
     PLAYER_ERROR_CODE ErrCode;
-    void _updatePokedexDisplay();
+    void UpdatePokedexDisplay();
     void Update() override;
     void Render() override;
     void RenderBallInventory() const;
@@ -44,7 +44,7 @@ public:
     void ThrowBall(const Ball &ball, const Pokemon &pokemon);
     Ball *GetPreviousBall() const;
     void NullifyBallState();
-    void RenderPokedex() const;
+    void RenderPokedex();
     PLAYER_ERROR_CODE HandleInput(const SDL_Event *e);
     void CenterPos();
 

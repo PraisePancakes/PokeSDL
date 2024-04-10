@@ -28,8 +28,9 @@ void Player::ThrowBall(const Ball &ball, const Pokemon &pokemon)
     this->m_pokedex.push_back(new Pokemon(pokemon));
 }
 
-void Player::RenderPokedex() const
+void Player::RenderPokedex()
 {
+    UpdatePokedexDisplay();
     for (int i = 0; i < m_pokedex.size(); i++)
     {
         m_pokedex[i]->Render();
@@ -75,7 +76,7 @@ void Player::NullifyBallState()
     this->m_previousBall = nullptr;
 }
 
-void Player::_updatePokedexDisplay()
+void Player::UpdatePokedexDisplay()
 {
     const int paddingX = 50;
     const int paddingY = 50;

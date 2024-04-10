@@ -34,9 +34,8 @@ const std::string Pokemon::BuildSpawnString() const
 
 void Pokemon::Render()
 {
-      this->m_nameBox->Render();
+    this->m_nameBox->Render();
     SDL_RenderCopy(Game::Renderer, this->m_objTexture, NULL, &this->ObjRect);
-  
 };
 
 void Pokemon::Update()

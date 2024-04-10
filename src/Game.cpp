@@ -127,7 +127,7 @@ void Game::_establishBoundaries()
 {
     if (player->ObjRect.y >= m_screen_height / 2 - 75)
     {
-        player->ObjRect.y -= 1;
+        player->ObjRect.y -= 5;
     }
 
     if (_lockState)
@@ -279,7 +279,7 @@ void Game::Update()
         {
             m_running = false;
         }
-        else if (player->ObjRect.x >= m_screen_width - 150) // dont quit game
+        else if (player->ObjRect.x >= m_screen_width - 200) // dont quit game
         {
             m_current_gstate = STATE::__GSTATE_MENU;
             player->CenterPos();
@@ -320,7 +320,7 @@ void Game::Render()
     else if (m_current_gstate == STATE::__GSTATE_POKEDEX)
     {
         // handle rendering pokedex
-        player->_updatePokedexDisplay();
+
         m_backMarker->Render();
         player->RenderPokedex();
     }
