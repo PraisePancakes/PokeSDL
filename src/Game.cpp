@@ -249,7 +249,17 @@ void Game::Update()
             player->ErrCode = PLAYER_ERROR_CODE::__NULL_BALL;
             console->PushLog(logTextBuilder.c_str(), {100, 255, 150, 255});
             Pokemon *dexable = new Pokemon(*m_randomPokemon);
-            player->ThrowBall(*player->GetCurrentBall(), *dexable);
+            if (!player->ThrowBall(*player->GetCurrentBall(), *dexable))
+            {
+                console->PushLog("Ball missed!");
+            }
+            else
+            {
+                console->PushLog("Successful Catch!");
+                player->CenterPos();
+                m_current_gstate = STATE::__GSTATE_MENU;
+                _lockState = false;
+            };
             player->NullifyBallState();
         }
         else if (player->ErrCode == PLAYER_ERROR_CODE::__NULL_AMOUNT)

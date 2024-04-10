@@ -41,7 +41,7 @@ public:
     void Render() override;
     void RenderBallInventory() const;
     Ball *GetCurrentBall() const;
-    void ThrowBall(const Ball &ball, const Pokemon &pokemon);
+    bool ThrowBall(const Ball &ball, const Pokemon &pokemon);
     Ball *GetPreviousBall() const;
     void NullifyBallState();
     void RenderPokedex();

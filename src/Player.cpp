@@ -2,6 +2,7 @@
 #include "../include/TextureManager.hpp"
 #define __MOVEMENT_SPEED__ 5
 #include <math.h>
+#include <time.h>
 
 Player::Player(const char *username, const char *img_path, int xPos, int yPos) : GameObject(img_path, xPos, yPos)
 {
@@ -22,10 +23,21 @@ Ball *Player::GetPreviousBall() const
 {
     return m_previousBall;
 }
-void Player::ThrowBall(const Ball &ball, const Pokemon &pokemon)
+bool Player::ThrowBall(const Ball &ball, const Pokemon &pokemon)
 {
+    srand(time(NULL));
+
+    int chance = rand() % 75;
+
     this->m_currentBall->DecrementAmount();
-    this->m_pokedex.push_back(new Pokemon(pokemon));
+
+    if (this->m_currentBall->GetCatchRate() > chance)
+    {
+        this->m_pokedex.push_back(new Pokemon(pokemon));
+        return true;
+    }
+
+    return false;
 }
 
 void Player::RenderPokedex()

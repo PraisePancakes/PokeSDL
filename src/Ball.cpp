@@ -2,6 +2,7 @@
 #include "../include/TextureManager.hpp"
 #include <unistd.h>
 
+
 Ball::Ball(const std::string &ball_name, const char *img_path, int xPos, int yPos, BALLTYPE type) : GameObject(img_path, xPos, yPos)
 {
     if (type == BALLTYPE::__TYPE_MASTERBALL)
@@ -53,6 +54,8 @@ void Ball::Update()
 
 int Ball::GetCatchRate() const
 {
+   
+
     return this->m_catchRate;
 }
 
