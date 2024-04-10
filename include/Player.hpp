@@ -2,6 +2,8 @@
 #include "GameObject.hpp"
 #include <bitset>
 #include "Ball.hpp"
+#include "Pokemon.hpp"
+#include <vector>
 
 enum class _MOVING_STATE
 {
@@ -29,16 +31,20 @@ class Player : public GameObject
     void _initBallInv();
     Ball *m_currentBall;
     Ball *m_previousBall;
+    std::vector<Pokemon *> m_pokedex;
 
 public:
     Player(const char *username, const char *img_path, int xPos, int yPos);
     PLAYER_ERROR_CODE ErrCode;
+    void _updatePokedexDisplay();
     void Update() override;
     void Render() override;
     void RenderBallInventory() const;
     Ball *GetCurrentBall() const;
+    void ThrowBall(const Ball &ball, const Pokemon &pokemon);
     Ball *GetPreviousBall() const;
     void NullifyBallState();
+    void RenderPokedex() const;
     PLAYER_ERROR_CODE HandleInput(const SDL_Event *e);
     void CenterPos();
 

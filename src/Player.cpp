@@ -22,6 +22,19 @@ Ball *Player::GetPreviousBall() const
 {
     return m_previousBall;
 }
+void Player::ThrowBall(const Ball &ball, const Pokemon &pokemon)
+{
+    this->m_currentBall->DecrementAmount();
+    this->m_pokedex.push_back(new Pokemon(pokemon));
+}
+
+void Player::RenderPokedex() const
+{
+    for (int i = 0; i < m_pokedex.size(); i++)
+    {
+        m_pokedex[i]->Render();
+    }
+}
 
 void Player::_initBallInv()
 {
@@ -62,8 +75,35 @@ void Player::NullifyBallState()
     this->m_previousBall = nullptr;
 }
 
+void Player::_updatePokedexDisplay()
+{
+    const int paddingX = 50;
+    const int paddingY = 50;
+    const int startX = 50;
+    const int startY = 50;
+    const int numCols = 5;
+
+    int currentX = startX;
+    int currentY = startY;
+    for (int i = 0; i < m_pokedex.size(); i++)
+    {
+        m_pokedex[i]->ObjRect.x = currentX;
+        m_pokedex[i]->ObjRect.y = currentY;
+        m_pokedex[i]->Update();
+        currentX += m_pokedex[i]->ObjRect.w + paddingX;
+        if ((i + 1) % numCols == 0) // Move to the next row
+        {
+            currentX = startX;
+            currentY += m_pokedex[i]->ObjRect.h + paddingY;
+        }
+
+        m_pokedex[i]->Render();
+    }
+}
+
 void Player::Update()
 {
+
     if (m_moving)
     {
         this->m_objTexture = Texture::TextureManager::LoadTexture("assets/player/run.png");

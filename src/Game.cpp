@@ -137,15 +137,15 @@ void Game::_establishBoundaries()
         {
             if (player->ObjRect.x >= m_screen_width - 150)
             {
-                player->ObjRect.x -= 1;
+                player->ObjRect.x -= 5;
             }
             if (player->ObjRect.y <= 0)
             {
-                player->ObjRect.y += 1;
+                player->ObjRect.y += 5;
             }
             if (player->ObjRect.x < -20)
             {
-                player->ObjRect.x += 1;
+                player->ObjRect.x += 5;
             }
         }
         m_generateNewPokemon = false;
@@ -217,6 +217,7 @@ void Game::Update()
 
         if (player->GetCurrentBall() != player->GetPreviousBall())
         {
+
             SDL_Color color;
             switch (player->GetCurrentBall()->BallType)
             {
@@ -242,11 +243,12 @@ void Game::Update()
 
         if (player->ErrCode == PLAYER_ERROR_CODE::__OK_THROW)
         {
+
             std::string logTextBuilder = "You threw a " + player->GetCurrentBall()->m_nameSerializable + " at " + m_randomPokemon->GetNameString();
 
             player->ErrCode = PLAYER_ERROR_CODE::__NULL_BALL;
             console->PushLog(logTextBuilder.c_str(), {100, 255, 150, 255});
-            player->GetCurrentBall()->DecrementAmount();
+            player->ThrowBall(*player->GetCurrentBall(), *m_randomPokemon);
             player->NullifyBallState();
         }
         else if (player->ErrCode == PLAYER_ERROR_CODE::__NULL_AMOUNT)
@@ -318,7 +320,9 @@ void Game::Render()
     else if (m_current_gstate == STATE::__GSTATE_POKEDEX)
     {
         // handle rendering pokedex
+        player->_updatePokedexDisplay();
         m_backMarker->Render();
+        player->RenderPokedex();
     }
     else if (m_current_gstate == STATE::__GSTATE_CATCH)
     {
