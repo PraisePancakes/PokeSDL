@@ -255,7 +255,8 @@ void Game::Update()
             }
             else
             {
-                console->PushLog("Successful Catch!");
+                std::string logTextBuilder = "Successfully Caught a " + m_randomPokemon->GetNameString() + " !";
+                console->PushLog(logTextBuilder.c_str());
                 player->CenterPos();
                 m_current_gstate = STATE::__GSTATE_MENU;
                 _lockState = false;
@@ -345,6 +346,7 @@ void Game::Render()
     }
     else if (m_current_gstate == STATE::__GSTATE_ACHIEVEMENTS)
     {
+        player->RenderAchievements();
         m_backMarker->Render();
     }
 

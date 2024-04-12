@@ -3,6 +3,7 @@
 #include <bitset>
 #include "Ball.hpp"
 #include "Pokemon.hpp"
+#include "Achievement.hpp"
 #include <vector>
 
 enum class _MOVING_STATE
@@ -32,11 +33,15 @@ class Player : public GameObject
     Ball *m_currentBall;
     Ball *m_previousBall;
     std::vector<Pokemon *> m_pokedex;
+    std::vector<Achievement *> m_achievements;
+    void _initAchievements();
+    void _updateAchievements();
+    void _updatePokedexDisplay();
 
 public:
     Player(const char *username, const char *img_path, int xPos, int yPos);
     PLAYER_ERROR_CODE ErrCode;
-    void UpdatePokedexDisplay();
+
     void Update() override;
     void Render() override;
     void RenderBallInventory() const;
@@ -45,6 +50,7 @@ public:
     Ball *GetPreviousBall() const;
     void NullifyBallState();
     void RenderPokedex();
+    void RenderAchievements();
     PLAYER_ERROR_CODE HandleInput(const SDL_Event *e);
     void CenterPos();
 

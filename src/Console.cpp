@@ -82,10 +82,6 @@ void Console::Update()
     _updateLogItemPositions();
 };
 
-void Console::HandleConsoleEvents(){
-
-};
-
 Console::~Console()
 {
     this->m_title->~Textbox();
